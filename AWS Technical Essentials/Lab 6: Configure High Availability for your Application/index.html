@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)https://aws.qwiklabs.com/classrooms/53233/labs/298995 -->
+<html lang="en" class="mdl-js"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>AWS Technical Essentials – Lab 6: Configure High Availability for your Application | Qwiklabs</title>
+<script>
+//<![CDATA[
+window.gon={};gon.current_user={"firstname":"kuldeep","lastname":"yadav","fullname":"kuldeep yadav","company":"perfios","email":"kuldeep.yadav@perfios.com","origin":"aws, direct","subscriptions":0,"id":"c8397035b4f0e96855dcc615962e597a","qlCreatedAt":"2021-09-03 13:00:07 UTC","optIn":true,"current_organization_id":null,"current_organization_role":null};gon.segment=null;gon.deployment="aws";gon.content={"type":"Lab","id":10100,"name":"AWS Technical Essentials – Lab 6: Configure High Availability for your Application"};
+//]]>
+</script>
+<script>
+  dataLayer = [
+    {user: gon.current_user},
+    {content: gon.content}
+  ];
+</script>
+<script src="./index_files/webcomponents-loader-60a166e60df2787cca5915e2ced8c317457f421a20f02601b937a72275ac441a.js"></script>
+<script src="./index_files/vendor-2beee108ba05276bc429223ee82ed81449d233c93d45af5da84add895e101218.js"></script>
+<script src="./index_files/application-aff4d0aea1b1b9765236b9a112bea54766c7790c60580b55af7e31862aa4fceb.js"></script>
+<script src="./index_files/hallofmirrors-84749047ce82f1e241ba4ec58cdf2bcfe207804c9f90edd3a1d66f3620b1db63.js"></script>
+<custom-style>
+  <style is="custom-style">[hidden] {
+  display: none !important;
+}
+
+</style>
+</custom-style>
+<custom-style>
+  <style is="custom-style">html {
+  --layout_-_display:  flex;;
+
+      --layout-inline_-_display:  inline-flex;;
+
+      --layout-horizontal_-_display:  var(--layout_-_display); --layout-horizontal_-_-ms-flex-direction:  row; --layout-horizontal_-_-webkit-flex-direction:  row; --layout-horizontal_-_flex-direction:  row;;
+
+      --layout-horizontal-reverse_-_display:  var(--layout_-_display); --layout-horizontal-reverse_-_-ms-flex-direction:  row-reverse; --layout-horizontal-reverse_-_-webkit-flex-direction:  row-reverse; --layout-horizontal-reverse_-_flex-direction:  row-reverse;;
+
+      --layout-vertical_-_display:  var(--layout_-_display); --layout-vertical_-_-ms-flex-direction:  column; --layout-vertical_-_-webkit-flex-direction:  column; --layout-vertical_-_flex-direction:  column;;
+
+      --layout-vertical-reverse_-_display:  var(--layout_-_display); --layout-vertical-reverse_-_-ms-flex-direction:  column-reverse; --layout-vertical-reverse_-_-webkit-flex-direction:  column-reverse; --layout-vertical-reverse_-_flex-direction:  column-reverse;;
+
+      --layout-wrap_-_-ms-flex-wrap:  wrap; --layout-wrap_-_-webkit-flex-wrap:  wrap; --layout-wrap_-_flex-wrap:  wrap;;
+
+      --layout-wrap-reverse_-_-ms-flex-wrap:  wrap-reverse; --layout-wrap-reverse_-_-webkit-flex-wrap:  wrap-reverse; --layout-wrap-reverse_-_flex-wrap:  wrap-reverse;;
+
+      --layout-flex-auto_-_-ms-flex:  1 1 auto; --layout-flex-auto_-_-webkit-flex:  1 1 auto; --layout-flex-auto_-_flex:  1 1 auto;;
+
+      --layout-flex-none_-_-ms-flex:  none; --layout-flex-none_-_-webkit-flex:  none; --layout-flex-none_-_flex:  none;;
+
+      --layout-flex_-_-ms-flex:  1 1 0.000000001px; --layout-flex_-_-webkit-flex:  1; --layout-flex_-_flex:  1; --layout-flex_-_-webkit-flex-basis:  0.000000001px; --layout-flex_-_flex-basis:  0.000000001px;;
+
+      --layout-flex-2_-_-ms-flex:  2; --layout-flex-2_-_-webkit-flex:  2; --layout-flex-2_-_flex:  2;;
+
+      --layout-flex-3_-_-ms-flex:  3; --layout-flex-3_-_-webkit-flex:  3; --layout-flex-3_-_flex:  3;;
+
+      --layout-flex-4_-_-ms-flex:  4; --layout-flex-4_-_-webkit-flex:  4; --layout-flex-4_-_flex:  4;;
+
+      --layout-flex-5_-_-ms-flex:  5; --layout-flex-5_-_-webkit-flex:  5; --layout-flex-5_-_flex:  5;;
+
+      --layout-flex-6_-_-ms-flex:  6; --layout-flex-6_-_-webkit-flex:  6; --layout-flex-6_-_flex:  6;;
+
+      --layout-flex-7_-_-ms-flex:  7; --layout-flex-7_-_-webkit-flex:  7; --layout-flex-7_-_flex:  7;;
+
+      --layout-flex-8_-_-ms-flex:  8; --layout-flex-8_-_-webkit-flex:  8; --layout-flex-8_-_flex:  8;;
+
+      --layout-flex-9_-_-ms-flex:  9; --layout-flex-9_-_-webkit-flex:  9; --layout-flex-9_-_flex:  9;;
+
+      --layout-flex-10_-_-ms-flex:  10; --layout-flex-10_-_-webkit-flex:  10; --layout-flex-10_-_flex:  10;;
+
+      --layout-flex-11_-_-ms-flex:  11; --layout-flex-11_-_-webkit-flex:  11; --layout-flex-11_-_flex:  11;;
+
+      --layout-flex-12_-_-ms-flex:  12; --layout-flex-12_-_-webkit-flex:  12; --layout-flex-12_-_flex:  12;;
+
+      
+
+      --layout-start_-_-ms-flex-align:  start; --layout-start_-_-webkit-align-items:  flex-start; --layout-start_-_align-items:  flex-start;;
+
+      --layout-center_-_-ms-flex-align:  center; --layout-center_-_-webkit-align-items:  center; --layout-center_-_align-items:  center;;
+
+      --layout-end_-_-ms-flex-align:  end; --layout-end_-_-webkit-align-items:  flex-end; --layout-end_-_align-items:  flex-end;;
+
+      --layout-baseline_-_-ms-flex-align:  baseline; --layout-baseline_-_-webkit-align-items:  baseline; --layout-baseline_-_align-items:  baseline;;
+
+      
+
+      --layout-start-justified_-_-ms-flex-pack:  start; --layout-start-justified_-_-webkit-justify-content:  flex-start; --layout-start-justified_-_justify-content:  flex-start;;
+
+      --layout-center-justified_-_-ms-flex-pack:  center; --layout-center-justified_-_-webkit-justify-content:  center; --layout-center-justified_-_justify-content:  center;;
+
+      --layout-end-justified_-_-ms-flex-pack:  end; --layout-end-justified_-_-webkit-justify-content:  flex-end; --layout-end-justified_-_justify-content:  flex-end;;
+
+      --layout-around-justified_-_-ms-flex-pack:  distribute; --layout-around-justified_-_-webkit-justify-content:  space-around; --layout-around-justified_-_justify-content:  space-around;;
+
+      --layout-justified_-_-ms-flex-pack:  justify; --layout-justified_-_-webkit-justify-content:  space-between; --layout-justified_-_justify-content:  space-between;;
+
+      --layout-center-center_-_-ms-flex-align:  var(--layout-center_-_-ms-flex-align); --layout-center-center_-_-webkit-align-items:  var(--layout-center_-_-webkit-align-items); --layout-center-center_-_align-items:  var(--layout-center_-_align-items); --layout-center-center_-_-ms-flex-pack:  var(--layout-center-justified_-_-ms-flex-pack); --layout-center-center_-_-webkit-justify-content:  var(--layout-center-justified_-_-webkit-justify-content); --layout-center-center_-_justify-content:  var(--layout-center-justified_-_justify-content);;
+
+      
+
+      --layout-self-start_-_-ms-align-self:  flex-start; --layout-self-start_-_-webkit-align-self:  flex-start; --layout-self-start_-_align-self:  flex-start;;
+
+      --layout-self-center_-_-ms-align-self:  center; --layout-self-center_-_-webkit-align-self:  center; --layout-self-center_-_align-self:  center;;
+
+      --layout-self-end_-_-ms-align-self:  flex-end; --layout-self-end_-_-webkit-align-self:  flex-end; --layout-self-end_-_align-self:  flex-end;;
+
+      --layout-self-stretch_-_-ms-align-self:  stretch; --layout-self-stretch_-_-webkit-align-self:  stretch; --layout-self-stretch_-_align-self:  stretch;;
+
+      --layout-self-baseline_-_-ms-align-self:  baseline; --layout-self-baseline_-_-webkit-align-self:  baseline; --layout-self-baseline_-_align-self:  baseline;;
+
+      
+
+      --layout-start-aligned_-_-ms-flex-line-pack:  start; --layout-start-aligned_-_-ms-align-content:  flex-start; --layout-start-aligned_-_-webkit-align-content:  flex-start; --layout-start-aligned_-_align-content:  flex-start;;
+
+      --layout-end-aligned_-_-ms-flex-line-pack:  end; --layout-end-aligned_-_-ms-align-content:  flex-end; --layout-end-aligned_-_-webkit-align-content:  flex-end; --layout-end-aligned_-_align-content:  flex-end;;
+
+      --layout-center-aligned_-_-ms-flex-line-pack:  center; --layout-center-aligned_-_-ms-align-content:  center; --layout-center-aligned_-_-webkit-align-content:  center; --layout-center-aligned_-_align-content:  center;;
+
+      --layout-between-aligned_-_-ms-flex-line-pack:  justify; --layout-between-aligned_-_-ms-align-content:  space-between; --layout-between-aligned_-_-webkit-align-content:  space-between; --layout-between-aligned_-_align-content:  space-between;;
+
+      --layout-around-aligned_-_-ms-flex-line-pack:  distribute; --layout-around-aligned_-_-ms-align-content:  space-around; --layout-around-aligned_-_-webkit-align-content:  space-around; --layout-around-aligned_-_align-content:  space-around;;
+
+      
+
+      --layout-block_-_display:  block;;
+
+      --layout-invisible_-_visibility:  hidden !important;;
+
+      --layout-relative_-_position:  relative;;
+
+      --layout-fit_-_position:  absolute; --layout-fit_-_top:  0; --layout-fit_-_right:  0; --layout-fit_-_bottom:  0; --layout-fit_-_left:  0;;
+
+      --layout-scroll_-_-webkit-overflow-scrolling:  touch; --layout-scroll_-_overflow:  auto;;
+
+      --layout-fullbleed_-_margin:  0; --layout-fullbleed_-_height:  100vh;;
+
+      
+
+      --layout-fixed-top_-_position:  fixed; --layout-fixed-top_-_top:  0; --layout-fixed-top_-_left:  0; --layout-fixed-top_-_right:  0;;
+
+      --layout-fixed-right_-_position:  fixed; --layout-fixed-right_-_top:  0; --layout-fixed-right_-_right:  0; --layout-fixed-right_-_bottom:  0;;
+
+      --layout-fixed-bottom_-_position:  fixed; --layout-fixed-bottom_-_right:  0; --layout-fixed-bottom_-_bottom:  0; --layout-fixed-bottom_-_left:  0;;
+
+      --layout-fixed-left_-_position:  fixed; --layout-fixed-left_-_top:  0; --layout-fixed-left_-_bottom:  0; --layout-fixed-left_-_left:  0;;
+}
+
+</style>
+</custom-style><style>[hidden] { display: none !important; }</style><custom-style>
+  <style is="custom-style">html {
+  --google-red-100: #f4c7c3;
+      --google-red-300: #e67c73;
+      --google-red-500: #db4437;
+      --google-red-700: #c53929;
+
+      --google-blue-100: #c6dafc;
+      --google-blue-300: #7baaf7;
+      --google-blue-500: #4285f4;
+      --google-blue-700: #3367d6;
+
+      --google-green-100: #b7e1cd;
+      --google-green-300: #57bb8a;
+      --google-green-500: #0f9d58;
+      --google-green-700: #0b8043;
+
+      --google-yellow-100: #fce8b2;
+      --google-yellow-300: #f7cb4d;
+      --google-yellow-500: #f4b400;
+      --google-yellow-700: #f09300;
+
+      --google-grey-100: #f5f5f5;
+      --google-grey-300: #e0e0e0;
+      --google-grey-500: #9e9e9e;
+      --google-grey-700: #616161;
+
+      
+
+      --paper-red-50: #ffebee;
+      --paper-red-100: #ffcdd2;
+      --paper-red-200: #ef9a9a;
+      --paper-red-300: #e57373;
+      --paper-red-400: #ef5350;
+      --paper-red-500: #f44336;
+      --paper-red-600: #e53935;
+      --paper-red-700: #d32f2f;
+      --paper-red-800: #c62828;
+      --paper-red-900: #b71c1c;
+      --paper-red-a100: #ff8a80;
+      --paper-red-a200: #ff5252;
+      --paper-red-a400: #ff1744;
+      --paper-red-a700: #d50000;
+
+      --paper-pink-50: #fce4ec;
+      --paper-pink-100: #f8bbd0;
+      --paper-pink-200: #f48fb1;
+      --paper-pink-300: #f06292;
+      --paper-pink-400: #ec407a;
+      --paper-pink-500: #e91e63;
+      --paper-pink-600: #d81b60;
+      --paper-pink-700: #c2185b;
+      --paper-pink-800: #ad1457;
+      --paper-pink-900: #880e4f;
+      --paper-pink-a100: #ff80ab;
+      --paper-pink-a200: #ff4081;
+      --paper-pink-a400: #f50057;
+      --paper-pink-a700: #c51162;
+
+      --paper-purple-50: #f3e5f5;
+      --paper-purple-100: #e1bee7;
+      --paper-purple-200: #ce93d8;
+      --paper-purple-300: #ba68c8;
+      --paper-purple-400: #ab47bc;
+      --paper-purple-500: #9c27b0;
+      --paper-purple-600: #8e24aa;
+      --paper-purple-700: #7b1fa2;
+      --paper-purple-800: #6a1b9a;
+      --paper-purple-900: #4a148c;
+      --paper-purple-a100: #ea80fc;
+      --paper-purple-a200: #e040fb;
+      --paper-purple-a400: #d500f9;
+      --paper-purple-a700: #aa00ff;
+
+      --paper-deep-purple-50: #ede7f6;
+      --paper-deep-purple-100: #d1c4e9;
+      --paper-deep-purple-200: #b39ddb;
+      --paper-deep-purple-300: #9575cd;
+      --paper-deep-purple-400: #7e57c2;
+      --paper-deep-purple-500: #673ab7;
+      --paper-deep-purple-600: #5e35b1;
+      --paper-deep-purple-700: #512da8;
+      --paper-deep-purple-800: #4527a0;
+      --paper-deep-purple-900: #311b92;
+      --paper-deep-purple-a100: #b388ff;
+      --paper-deep-purple-a200: #7c4dff;
+      --paper-deep-purple-a400: #651fff;
+      --paper-deep-purple-a700: #6200ea;
+
+      --paper-indigo-50: #e8eaf6;
+      --paper-indigo-100: #c5cae9;
+      --paper-indigo-200: #9fa8da;
+      --paper-indigo-300: #7986cb;
+      --paper-indigo-400: #5c6bc0;
+      --paper-indigo-500: #3f51b5;
+      --paper-indigo-600: #3949ab;
+      --paper-indigo-700: #303f9f;
+      --paper-indigo-800: #283593;
+      --paper-indigo-900: #1a237e;
+      --paper-indigo-a100: #8c9eff;
+      --paper-indigo-a200: #536dfe;
+      --paper-indigo-a400: #3d5afe;
+      --paper-indigo-a700: #304ffe;
+
+      --paper-blue-50: #e3f2fd;
+      --paper-blue-100: #bbdefb;
+      --paper-blue-200: #90caf9;
+      --paper-blue-300: #64b5f6;
+      --paper-blue-400: #42a5f5;
+      --paper-blue-500: #2196f3;
+      --paper-blue-600: #1e88e5;
+      --paper-blue-700: #1976d2;
+      --paper-blue-800: #1565c0;
+      --paper-blue-900: #0d47a1;
+      --paper-blue-a100: #82b1ff;
+      --paper-blue-a200: #448aff;
+      --paper-blue-a400: #2979ff;
+      --paper-blue-a700: #2962ff;
+
+      --paper-light-blue-50: #e1f5fe;
+      --paper-light-blue-100: #b3e5fc;
+      --paper-light-blue-200: #81d4fa;
+      --paper-light-blue-300: #4fc3f7;
+      --paper-light-blue-400: #29b6f6;
+      --paper-light-blue-500: #03a9f4;
+      --paper-light-blue-600: #039be5;
+      --paper-light-blue-700: #0288d1;
+      --paper-light-blue-800: #0277bd;
+      --paper-light-blue-900: #01579b;
+      --paper-light-blue-a100: #80d8ff;
+      --paper-light-blue-a200: #40c4ff;
+      --paper-light-blue-a400: #00b0ff;
+      --paper-light-blue-a700: #0091ea;
+
+      --paper-cyan-50: #e0f7fa;
+      --paper-cyan-100: #b2ebf2;
+      --paper-cyan-200: #80deea;
+      --paper-cyan-300: #4dd0e1;
+      --paper-cyan-400: #26c6da;
+      --paper-cyan-500: #00bcd4;
+      --paper-cyan-600: #00acc1;
+      --paper-cyan-700: #0097a7;
+      --paper-cyan-800: #00838f;
+      --paper-cyan-900: #006064;
+      --paper-cyan-a100: #84ffff;
+      --paper-cyan-a200: #18ffff;
+      --paper-cyan-a400: #00e5ff;
+      --paper-cyan-a700: #00b8d4;
+
+      --paper-teal-50: #e0f2f1;
+      --paper-teal-100: #b2dfdb;
+      --paper-teal-200: #80cbc4;
+      --paper-teal-300: #4db6ac;
+      --paper-teal-400: #26a69a;
+      --paper-teal-500: #009688;
+      --paper-teal-600: #00897b;
+      --paper-teal-700: #00796b;
+      --paper-teal-800: #00695c;
+      --paper-teal-900: #004d40;
+      --paper-teal-a100: #a7ffeb;
+      --paper-teal-a200: #64ffda;
+      --paper-teal-a400: #1de9b6;
+      --paper-teal-a700: #00bfa5;
+
+      --paper-green-50: #e8f5e9;
+      --paper-green-100: #c8e6c9;
+      --paper-green-200: #a5d6a7;
+      --paper-green-300: #81c784;
+      --paper-green-400: #66bb6a;
+      --paper-green-500: #4caf50;
+      --paper-green-600: #43a047;
+      --paper-green-700: #388e3c;
+      --paper-green-800: #2e7d32;
+      --paper-green-900: #1b5e20;
+      --paper-green-a100: #b9f6ca;
+      --paper-green-a200: #69f0ae;
+      --paper-green-a400: #00e676;
+      --paper-green-a700: #00c853;
+
+      --paper-light-green-50: #f1f8e9;
+      --paper-light-green-100: #dcedc8;
+      --paper-light-green-200: #c5e1a5;
+      --paper-light-green-300: #aed581;
+      --paper-light-green-400: #9ccc65;
+      --paper-light-green-500: #8bc34a;
+      --paper-light-green-600: #7cb342;
+      --paper-light-green-700: #689f38;
+      --paper-light-green-800: #558b2f;
+      --paper-light-green-900: #33691e;
+      --paper-light-green-a100: #ccff90;
+      --paper-light-green-a200: #b2ff59;
+      --paper-light-green-a400: #76ff03;
+      --paper-light-green-a700: #64dd17;
+
+      --paper-lime-50: #f9fbe7;
+      --paper-lime-100: #f0f4c3;
+      --paper-lime-200: #e6ee9c;
+      --paper-lime-300: #dce775;
+      --paper-lime-400: #d4e157;
+      --paper-lime-500: #cddc39;
+      --paper-lime-600: #c0ca33;
+      --paper-lime-700: #afb42b;
+      --paper-lime-800: #9e9d24;
+      --paper-lime-900: #827717;
+      --paper-lime-a100: #f4ff81;
+      --paper-lime-a200: #eeff41;
+      --paper-lime-a400: #c6ff00;
+      --paper-lime-a700: #aeea00;
+
+      --paper-yellow-50: #fffde7;
+      --paper-yellow-100: #fff9c4;
+      --paper-yellow-200: #fff59d;
+      --paper-yellow-300: #fff176;
+      --paper-yellow-400: #ffee58;
+      --paper-yellow-500: #ffeb3b;
+      --paper-yellow-600: #fdd835;
+      --paper-yellow-700: #fbc02d;
+      --paper-yellow-800: #f9a825;
+      --paper-yellow-900: #f57f17;
+      --paper-yellow-a100: #ffff8d;
+      --paper-yellow-a200: #ffff00;
+      --paper-yellow-a400: #ffea00;
+      --paper-yellow-a700: #ffd600;
+
+      --paper-amber-50: #fff8e1;
+      --paper-amber-100: #ffecb3;
+      --paper-amber-200: #ffe082;
+      --paper-amber-300: #ffd54f;
+      --paper-amber-400: #ffca28;
+      --paper-amber-500: #ffc107;
+      --paper-amber-600: #ffb300;
+      --paper-amber-700: #ffa000;
+      --paper-amber-800: #ff8f00;
+      --paper-amber-900: #ff6f00;
+      --paper-amber-a100: #ffe57f;
+      --paper-amber-a200: #ffd740;
+      --paper-amber-a400: #ffc400;
+      --paper-amber-a700: #ffab00;
+
+      --paper-orange-50: #fff3e0;
+      --paper-orange-100: #ffe0b2;
+      --paper-orange-200: #ffcc80;
+      --paper-orange-300: #ffb74d;
+      --paper-orange-400: #ffa726;
+      --paper-orange-500: #ff9800;
+      --paper-orange-600: #fb8c00;
+      --paper-orange-700: #f57c00;
+      --paper-orange-800: #ef6c00;
+      --paper-orange-900: #e65100;
+      --paper-orange-a100: #ffd180;
+      --paper-orange-a200: #ffab40;
+      --paper-orange-a400: #ff9100;
+      --paper-orange-a700: #ff6500;
+
+      --paper-deep-orange-50: #fbe9e7;
+      --paper-deep-orange-100: #ffccbc;
+      --paper-deep-orange-200: #ffab91;
+      --paper-deep-orange-300: #ff8a65;
+      --paper-deep-orange-400: #ff7043;
+      --paper-deep-orange-500: #ff5722;
+      --paper-deep-orange-600: #f4511e;
+      --paper-deep-orange-700: #e64a19;
+      --paper-deep-orange-800: #d84315;
+      --paper-deep-orange-900: #bf360c;
+      --paper-deep-orange-a100: #ff9e80;
+      --paper-deep-orange-a200: #ff6e40;
+      --paper-deep-orange-a400: #ff3d00;
+      --paper-deep-orange-a700: #dd2c00;
+
+      --paper-brown-50: #efebe9;
+      --paper-brown-100: #d7ccc8;
+      --paper-brown-200: #bcaaa4;
+      --paper-brown-300: #a1887f;
+      --paper-brown-400: #8d6e63;
+      --paper-brown-500: #795548;
+      --paper-brown-600: #6d4c41;
+      --paper-brown-700: #5d4037;
+      --paper-brown-800: #4e342e;
+      --paper-brown-900: #3e2723;
+
+      --paper-grey-50: #fafafa;
+      --paper-grey-100: #f5f5f5;
+      --paper-grey-200: #eeeeee;
+      --paper-grey-300: #e0e0e0;
+      --paper-grey-400: #bdbdbd;
+      --paper-grey-500: #9e9e9e;
+      --paper-grey-600: #757575;
+      --paper-grey-700: #616161;
+      --paper-grey-800: #424242;
+      --paper-grey-900: #212121;
+
+      --paper-blue-grey-50: #eceff1;
+      --paper-blue-grey-100: #cfd8dc;
+      --paper-blue-grey-200: #b0bec5;
+      --paper-blue-grey-300: #90a4ae;
+      --paper-blue-grey-400: #78909c;
+      --paper-blue-grey-500: #607d8b;
+      --paper-blue-grey-600: #546e7a;
+      --paper-blue-grey-700: #455a64;
+      --paper-blue-grey-800: #37474f;
+      --paper-blue-grey-900: #263238;
+
+      
+      --dark-divider-opacity: 0.12;
+      --dark-disabled-opacity: 0.38; 
+      --dark-secondary-opacity: 0.54;
+      --dark-primary-opacity: 0.87;
+
+      
+      --light-divider-opacity: 0.12;
+      --light-disabled-opacity: 0.3; 
+      --light-secondary-opacity: 0.7;
+      --light-primary-opacity: 1.0;
+}
+
+</style>
+</custom-style><custom-style>
+  <style is="custom-style">html {
+  --primary-text-color: var(--light-theme-text-color);
+      --primary-background-color: var(--light-theme-background-color);
+      --secondary-text-color: var(--light-theme-secondary-color);
+      --disabled-text-color: var(--light-theme-disabled-color);
+      --divider-color: var(--light-theme-divider-color);
+      --error-color: var(--paper-deep-orange-a700);
+
+      
+      --primary-color: var(--paper-indigo-500);
+      --light-primary-color: var(--paper-indigo-100);
+      --dark-primary-color: var(--paper-indigo-700);
+
+      --accent-color: var(--paper-pink-a200);
+      --light-accent-color: var(--paper-pink-a100);
+      --dark-accent-color: var(--paper-pink-a400);
+
+
+      
+      --light-theme-background-color: #ffffff;
+      --light-theme-base-color: #000000;
+      --light-theme-text-color: var(--paper-grey-900);
+      --light-theme-secondary-color: #737373;  
+      --light-theme-disabled-color: #9b9b9b;  
+      --light-theme-divider-color: #dbdbdb;
+
+      
+      --dark-theme-background-color: var(--paper-grey-900);
+      --dark-theme-base-color: #ffffff;
+      --dark-theme-text-color: #ffffff;
+      --dark-theme-secondary-color: #bcbcbc;  
+      --dark-theme-disabled-color: #646464;  
+      --dark-theme-divider-color: #3c3c3c;
+
+      
+      --text-primary-color: var(--dark-theme-text-color);
+      --default-primary-color: var(--primary-color);
+}
+
+</style>
+</custom-style><script async="" src="./index_files/lazy.min.js"></script><script src="./index_files/loader.js"></script>
+<!--[if lt IE 9]>
+<script src='http://html5shim.googlecode.com/svn/trunk/html5.js' type='text/javascript'></script>
+<![endif]-->
+<!--[endif]>  <![endif]-->
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  "url": "https://www.qwiklabs.com/",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://www.qwiklabs.com/catalog?keywords={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script id="ze-snippet" src="./index_files/snippet.js"></script>
+
+
+<meta name="csrf-param" content="authenticity_token">
+<meta name="csrf-token" content="N0g+wLpl+QuRMjM5rauhpEaEbxRxNBU/D9hYKWxJxt0jB/TjQVCirDGjSVF735j4wQCt2UFtVoqD1QiJbh4lKA==">
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport">
+<meta content="1rRsY0INj8RvwB5EF5pwdxt2A2P9aDgAlsICaJ0d5w0" name="google-site-verification">
+<meta content="#3681E4" property="msapplication-TileColor">
+<meta content="/favicon-144.png" property="msapplication-TileImage">
+<meta content="[{&quot;id&quot;:&quot;recaptcha_experiment&quot;,&quot;optimize_id&quot;:&quot;dpViOcLkT3qS4TvL2mRojA&quot;,&quot;title&quot;:&quot;No Recaptcha shown for trusted users&quot;,&quot;variant_index&quot;:1,&quot;variant&quot;:&quot;no_recaptcha&quot;}]" name="active-experiments">
+<meta content="{&quot;userId&quot;:484237}" name="help-api-product-data">
+<meta content="This lab guides you through the process of how to configure High Availability for a web application, so it can scale horizontally as demand increases." name="description">
+<meta content="Qwiklabs" name="author">
+<meta content="AWS Technical Essentials – Lab 6: Configure High Availability for your Application | Qwiklabs" property="og:title">
+<meta content="website" property="og:type">
+<meta content="/favicon-144.png" property="og:image">
+<meta content="Qwiklabs" property="og:site_name">
+<meta content="This lab guides you through the process of how to configure High Availability for a web application, so it can scale horizontally as demand increases." property="og:description">
+<meta content="/qwiklabs_logo_900x887.png" property="og:logo" size="900x887">
+<meta content="/qwiklabs_logo_994x187.png" property="og:logo" size="994x187">
+
+
+<link href="https://aws.qwiklabs.com/favicon-32.png" rel="shortcut icon">
+<link color="#3681E4" href="https://aws.qwiklabs.com/favicon-svg.svg" rel="mask-icon">
+<link href="https://aws.qwiklabs.com/favicon-180.png" rel="apple-touch-icon-precomposed">
+
+
+
+<link rel="stylesheet" media="screen" href="./index_files/css">
+
+
+<link rel="stylesheet" media="all" href="./index_files/application-0afc6e2c608d6ebde2dda8097a9c0bad0991665c811f10b603f6f0484a5fd145.css">
+
+<style>
+  :root {
+    --primary-text-on-surface-color: #1A73E8;
+    --primary-surface-color: #1A73E8;
+    --primary-surface-color-rgb: 26,115,232;
+    --primary-surface-color-light: #d1e3fa;
+    --primary-surface-color-lightest: #e8f1fd;
+    --text-on-primary-color: #FFFFFF;
+    --accent-text-on-surface-color: #F29900;
+    --accent-surface-color: #F9AB00;
+    --accent-surface-color-rgb: 249,171,0;
+    --accent-surface-color-light: #ffefcc;
+    --text-on-accent-color: #202124;
+  }
+</style>
+
+
+
+<script data-dapp-detection="">!function(){let e=!1;function n(){if(!e){const n=document.createElement("meta");n.name="dapp-detected",document.head.appendChild(n),e=!0}}if(window.hasOwnProperty("ethereum")){if(window.__disableDappDetectionInsertion=!0,void 0===window.ethereum)return;n()}else{var t=window.ethereum;Object.defineProperty(window,"ethereum",{configurable:!0,enumerable:!1,set:function(e){window.__disableDappDetectionInsertion||n(),t=e},get:function(){if(!window.__disableDappDetectionInsertion){const e=arguments.callee;e&&e.caller&&e.caller.toString&&-1!==e.caller.toString().indexOf("getOwnPropertyNames")||n()}return t}})}}();</script></head>
+<body class="lab-show l-full no-nav application-new focuses focuses-show lab-show l-full no-nav " style="zoom: 1;">
+<span class="hidden" id="flash-sibling-before"></span>
+
+<div class="header-container">
+<div class="header">
+<ql-icon-button class="js-nav-toggle header__nav-panel-button l-mrm">menu</ql-icon-button>
+<div class="header__title">
+<ql-icon-button label="Back" href="/classrooms/53233" id="4199a8dca7ba8b7a" target="_self" tip="Back">arrow_back</ql-icon-button>
+
+<h1 class="headline-5">
+AWS Technical Essentials – Lab 6: Configure High Availability for your Application
+</h1>
+</div>
+<div class="header__actions">
+<ql-icon-button class="header__button--search js-header-search-bar-button">search</ql-icon-button>
+<ql-icon-button id="control-panel-target" style="display: none;">
+dashboard
+</ql-icon-button>
+<ql-menu for="control-panel-target" id="control-panel-menu" style="left: -1000px; top: -1000px; opacity: 0; visibility: hidden;" role="menu" aria-labelledby="control-panel-target"></ql-menu>
+
+<ql-icon-button icon="help" id="help-menu-button" label="Open help menu" tip="Help"></ql-icon-button>
+<ql-menu for="help-menu-button" id="help-menu" style="left: -1000px; top: -1000px; opacity: 0; visibility: hidden;" role="menu" aria-labelledby="help-menu-button">
+<ql-menu-item data-analytics-action="opened_help" data-analytics-label="lab" label="Help Center" onclick="hallofmirrors.helpService.startHelp({&quot;productData&quot;:{&quot;userId&quot;:484237},&quot;context&quot;:&quot;lab&quot;})"></ql-menu-item>
+<ql-menu-item href="https://support.google.com/qwiklabs/contact/contact_us" label="Email support" target="_blank"></ql-menu-item>
+<ql-menu-item label="Chat support" onclick="ql.chat.open()"></ql-menu-item>
+</ql-menu>
+
+<ql-icon-button icon="language" id="language" label="Set locale" tip="Set locale"></ql-icon-button>
+<ql-menu for="language" style="left: -1000px; top: -1000px; opacity: 0; visibility: hidden;" role="menu" aria-labelledby="language">
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="ar" href="/classrooms/53233/labs/298995?locale=ar" label="العربية‬‎" lang="ar"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="de" href="/classrooms/53233/labs/298995?locale=de" label="Deutsch" lang="de"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="en" href="/classrooms/53233/labs/298995?locale=en" label="English" lang="en"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="es" href="/classrooms/53233/labs/298995?locale=es" label="español (Latinoamérica)" lang="es"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="fr" href="/classrooms/53233/labs/298995?locale=fr" label="français" lang="fr"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="he" href="/classrooms/53233/labs/298995?locale=he" label="עברית" lang="he"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="id" href="/classrooms/53233/labs/298995?locale=id" label="bahasa Indonesia" lang="id"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="it" href="/classrooms/53233/labs/298995?locale=it" label="Italiano" lang="it"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="ja" href="/classrooms/53233/labs/298995?locale=ja" label="日本語" lang="ja"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="ko" href="/classrooms/53233/labs/298995?locale=ko" label="한국어" lang="ko"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="pl" href="/classrooms/53233/labs/298995?locale=pl" label="Polski" lang="pl"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="pt_BR" href="/classrooms/53233/labs/298995?locale=pt_BR" label="português (Brasil)" lang="pt_BR"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="pt_PT" href="/classrooms/53233/labs/298995?locale=pt_PT" label="português (Portugal)" lang="pt_PT"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="ru" href="/classrooms/53233/labs/298995?locale=ru" label="русский" lang="ru"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="tr" href="/classrooms/53233/labs/298995?locale=tr" label="Türkçe" lang="tr"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="zh" href="/classrooms/53233/labs/298995?locale=zh" label="简体中文" lang="zh"></ql-menu-item>
+<ql-menu-item data-analytics-action="changed_locale" data-analytics-label="zh_TW" href="/classrooms/53233/labs/298995?locale=zh_TW" label="繁體中文" lang="zh_TW"></ql-menu-item>
+</ql-menu>
+
+<ql-icon-button id="my_account" label="My account" tip="My account">
+<ql-avatar></ql-avatar>
+</ql-icon-button>
+<ql-menu for="my_account" id="my_account_menu" style="max-height: 640px; left: -1000px; top: -1000px; opacity: 0; visibility: hidden;" role="menu" aria-labelledby="my_account">
+<div class="my-account-menu">
+<ql-avatar class="l-mtl l-mbl" size="120"></ql-avatar>
+<div class="my-account-menu__user-info l-mbl">
+<h4 class="ql-subhead-1">kuldeep yadav</h4>
+<p class="ql-body-2 text--light">kuldeep.yadav@perfios.com</p>
+<p class="ql-body-2 text--light">
+</p>
+</div>
+<div class="buttons l-mbl">
+<a class="button button--hairline" id="settings" href="https://aws.qwiklabs.com/my_account/profile">Settings</a>
+</div>
+<hr>
+<ql-button data-analytics-action="clicked_sign_out" href="/users/sign_out" method="delete">
+Sign Out
+</ql-button>
+<div class="privacy l-mtl">
+<a class="ql-caption text--light" href="https://aws.qwiklabs.com/privacy_policy">Privacy</a>
+<span class="ql-caption text--light l-mls l-mrs">·</span>
+<a class="ql-caption text--light" href="https://aws.qwiklabs.com/terms_of_service">Terms</a>
+</div>
+</div>
+</ql-menu>
+
+</div>
+</div>
+<div class="header__search-bar js-header-search-bar">
+<form class="js-search-form-mobile" onsubmit="ql.searchFilter(); return false;" action="https://aws.qwiklabs.com/searches/lab" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓"><input type="hidden" name="authenticity_token" value="N0g+wLpl+QuRMjM5rauhpEaEbxRxNBU/D9hYKWxJxt0jB/TjQVCirDGjSVF735j4wQCt2UFtVoqD1QiJbh4lKA==">
+<input type="text" name="keywords" id="search" placeholder="Search" maxlength="255" aria-label="catalog search bar">
+</form>
+
+<ql-icon-button class="js-close-search-bar">close</ql-icon-button>
+</div>
+</div>
+
+<nav class="nav-bar">
+<a class="nav-bar__item js-navigation-button" href="https://aws.qwiklabs.com/"><ql-icon class="nav-bar__item__icon">
+home
+</ql-icon>
+<span class="nav-bar__item__label">
+Home
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button" href="https://aws.qwiklabs.com/catalog"><ql-icon class="nav-bar__item__icon">
+school
+</ql-icon>
+<span class="nav-bar__item__label">
+Catalog
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button  active" aria-current="page" href="https://aws.qwiklabs.com/my_learning"><ql-icon class="nav-bar__item__icon">
+event_note
+</ql-icon>
+<span class="nav-bar__item__label">
+My Learning
+</span>
+</a>
+</nav>
+
+<nav class="nav-panel js-nav-panel">
+<div class="nav-panel__logo">
+<div class="custom-logo"><img alt="Logo" src="./index_files/i0qFEQoJiBanlKZQElmSw+6HzGe37MLn2bL3nInH6MM="></div>
+</div>
+<a title="Home" tabindex="-1" class="nav-panel__item js-navigation-button" href="https://aws.qwiklabs.com/"><ql-icon class="nav-panel__item__icon">
+home
+</ql-icon>
+<div class="nav-panel__item__label">
+Home
+</div>
+</a>
+<a title="Catalog" tabindex="-1" class="nav-panel__item js-navigation-button" href="https://aws.qwiklabs.com/catalog"><ql-icon class="nav-panel__item__icon">
+school
+</ql-icon>
+<div class="nav-panel__item__label">
+Catalog
+</div>
+</a>
+<a title="My Learning" tabindex="-1" class="nav-panel__item js-navigation-button active" aria-current="page" href="https://aws.qwiklabs.com/my_learning"><ql-icon class="nav-panel__item__icon">
+event_note
+</ql-icon>
+<div class="nav-panel__item__label">
+My Learning
+</div>
+</a>
+<div class="nav-panel__spacer"></div>
+<a title="Profile" tabindex="-1" class="nav-panel__item js-navigation-button" href="https://aws.qwiklabs.com/my_account/profile"><ql-icon class="nav-panel__item__icon">
+account_circle
+</ql-icon>
+<div class="nav-panel__item__label">
+Profile
+</div>
+</a>
+<a title="Credits &amp; Subscriptions" tabindex="-1" class="nav-panel__item js-navigation-button" href="https://aws.qwiklabs.com/my_account/credits"><ql-icon class="nav-panel__item__icon">
+money
+</ql-icon>
+<div class="nav-panel__item__label">
+Credits &amp; Subscriptions
+</div>
+</a>
+<a title="Security" tabindex="-1" class="nav-panel__item js-navigation-button" href="https://aws.qwiklabs.com/my_account/security"><ql-icon class="nav-panel__item__icon">
+security
+</ql-icon>
+<div class="nav-panel__item__label">
+Security
+</div>
+</a>
+<div class="nav-panel__spacer"></div>
+<a class="nav-panel__item" tabindex="-1" href="https://aws.qwiklabs.com/classrooms/53233/labs/298995#"><ql-help>
+<div class="nav-panel__help-item">
+<ql-icon class="nav-panel__item__icon">help</ql-icon>
+<div class="nav-panel__item__label">
+Help
+</div>
+</div>
+</ql-help>
+</a><div class="nav-panel__small-links">
+<a tabindex="-1" href="https://aws.qwiklabs.com/privacy_policy">Privacy</a>
+<a tabindex="-1" href="https://aws.qwiklabs.com/terms_of_service">Terms</a>
+</div>
+</nav>
+<div class="nav-panel__overlay js-nav-toggle"></div>
+
+<main class="js-main">
+<div class="l-main-wrapper" id="main-wrapper">
+
+
+
+
+
+<ql-drawer-container class="js-lab-state" data-analytics-payload="{&quot;label&quot;:&quot;AWS Technical Essentials – Lab 6: Configure High Availability for your Application&quot;,&quot;lab_name&quot;:&quot;AWS Technical Essentials – Lab 6: Configure High Availability for your Application&quot;,&quot;classroom_name&quot;:null,&quot;deployment&quot;:&quot;aws&quot;}" data-focus-id="298995" data-lab-billing-limit="0.0" data-lab-duration="2700" data-parent="classroom" id="lab-container">
+<ql-drawer id="terminal-drawer" slot="drawer" style="width: calc(100% - 480px); visibility: hidden;" tabindex="-1" aria-hidden="true" mode="side">
+<iframe allow="clipboard-read" class="terminal" id="embedded-resource" src="./index_files/saved_resource.html"></iframe>
+</ql-drawer>
+<ql-drawer-content class="js-lab-wrapper" id="lab-content" slot="drawer-content">
+<ql-drawer-container id="lab-content-container">
+<ql-drawer id="control-panel-drawer" open="" slot="drawer" width="320" aria-hidden="false" mode="side" style="width: 320px; visibility: visible;">
+<ql-lab-control-panel class="ql-lab-control-panel__max-height control-panel js-lab-control-panel" connectionfiles="[]" labcontrolbutton="{&quot;disabled&quot;:false,&quot;pending&quot;:false,&quot;running&quot;:false}" labdetails="[]" labtimer="{&quot;ticking&quot;:false,&quot;secondsRemaining&quot;:2700}" studentresources="[]">
+</ql-lab-control-panel>
+</ql-drawer>
+<ql-drawer-content id="lab-instructions" slot="drawer-content">
+<ql-snackbar id="alert-snackbar"></ql-snackbar>
+<div class="alert alert--fake js-alert">
+<p class="alert__message js-alert-message" role="alert"></p>
+<ql-icon-button class="alert__close js-alert-close" icon="clear"></ql-icon-button>
+<iframe class="l-ie-iframe-fix" src="./index_files/saved_resource(1).html"></iframe>
+</div>
+<div class="lab-content__renderable-instructions js-lab-content">
+<div class="lab-preamble">
+<h1 class="lab-preamble__title">
+AWS Technical Essentials – Lab 6: Configure High Availability for your Application
+</h1>
+<div class="lab-preamble__details subtitle-headline-1">
+<span>45 minutes</span>
+<span>Free</span>
+<div class="lab__rating">
+<a aria-label="Lab Reviews" href="https://aws.qwiklabs.com/focuses/298995/reviews?parent=classroom"><div class="rateit" data-rateit-readonly="true" data-rateit-value="4.4314"><div class="rateit-reset" style="display: none;"></div><div class="rateit-range" style="width: 80px; height: 16px;"><div class="rateit-selected" style="height: 16px; width: 70.9024px;"></div><div class="rateit-hover" style="height:16px"></div></div></div>
+
+</a></div>
+</div>
+</div>
+
+<div class="markdown-lab-instructions js-markdown-instructions no-select" id="markdown-lab-instructions">
+<p><img src="./index_files/aws-logo.png" alt=""></p>
+
+
+
+<p>© 2021 Amazon Web Services, Inc. and its affiliates. All rights reserved. This work may not be reproduced or redistributed, in whole or in part, without prior written permission from Amazon Web Services, Inc. Commercial copying, lending, or selling is prohibited. All trademarks are the property of their owners.</p>
+
+<p>Corrections, feedback, or other questions? Contact us at <a href="https://support.aws.amazon.com/#/contacts/aws-training" target="_blank"><em>AWS Training and Certification</em></a>.</p>
+
+<h2 id="step1">Objectives</h2>
+
+<p>After completing this lab, you will be able to:</p>
+<ul>
+<li>Create an Application Load Balancer and a launch template</li>
+<li>Set up an Amazon Elastic Compute Cloud (Amazon EC2) Auto Scaling group</li>
+<li>Launch a template</li>
+<li>Test and stress a web application to validate scaling</li>
+</ul>
+<h3>Prerequisites</h3>
+
+<p>This lab requires:</p>
+<ul>
+<li>Notebook computer with Wi-Fi and Microsoft Windows, macOS, or Linux (Ubuntu, SuSE, or Red Hat)</li>
+<li>Administrator access (Microsoft Windows users)</li>
+<li>Internet browser, such as Chrome, Firefox, or Internet Explorer 9 or later</li>
+<li>SSH (Secure Shell) client, such as PuTTY</li>
+</ul>
+<p><strong>Note:</strong> Tablet devices cannot access the lab environment, although they can display student guides.</p>
+
+<h3>Duration</h3>
+
+<p>This lab requires 45 minutes to complete.</p>
+
+<h2 id="step2">Start Lab</h2>
+<ol start="1">
+<li>At the top of your screen, launch your lab by choosing <span style="background-color:#34A853;font-family:Google Sans;font-weight:bold;font-size:90%;color:white;border-color:#34A853;border-radius:4px;border-width:2px;border-style:solid;padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px;">Start Lab</span>
+</li>
+</ol>
+<p>This starts the process of provisioning your lab resources. An estimated amount of time to provision your lab resources is displayed. You must wait for your resources to be provisioned before continuing.</p>
+
+<p><i class="fas fa-info-circle"></i> If you are prompted for a token, use the one distributed to you (or credits you have purchased). </p>
+<ol start="2">
+<li>Open your lab by choosing <span style="background-color:white;font-family:Google Sans;font-weight:bold;font-size:90%;color:#1a73e8;border-color:#dadce0;border-radius:4px;border-width:2px;border-style:solid;padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px;">Open Console</span>
+</li>
+</ol>
+<p>This opens an AWS Management Console sign-in page.</p>
+<ol start="3">
+<li>On the sign-in page, configure:</li>
+</ol><ul>
+<li>
+<strong>IAM user name:</strong> <input readonly="" class="copyable-inline-input" size="10" type="text" value="awsstudent">
+</li>
+<li>
+<strong>Password:</strong> Paste the value of <strong>Password</strong> from the left side of the lab page</li>
+<li>Choose <span style="background-color:#257ACF;font-weight:bold;font-size:90%;color:white;border-radius:5px;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;">Sign In</span>
+</li>
+</ul>
+<p><i class="fas fa-exclamation-triangle"></i> <strong>Do not change the Region unless instructed.</strong></p>
+
+
+
+<h3>Common Login Errors</h3>
+
+<p><strong>Error: You must first log out</strong></p>
+
+<p><img src="./index_files/logouterror.png" alt=""></p>
+
+<p>If you see the message, <strong>You must first log out before logging into a different AWS account:</strong> </p>
+<ul>
+<li>Choose <strong>click here</strong>
+</li>
+<li>Close your browser tab to return to your initial lab window</li>
+<li>Choose <span style="background-color:white;font-family:Google Sans;font-weight:bold;font-size:90%;color:#1a73e8;border-color:#dadce0;border-radius:4px;border-width:2px;border-style:solid;padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px;">Open Console</span> again</li>
+</ul>
+
+
+<p>For this scenario, you have been tasked with setting up a load balancer and an Auto Scaling group, so your application can horizontally<br>
+scale.</p>
+
+<p>In this exercise, you will create an Application Load Balancer and a<br>
+launch template. Then, you will set up an Auto Scaling group that uses<br>
+the Load Balancer and launch template you created. Finally, you will<br>
+test and stress the application and watch your application scale in real<br>
+time.</p>
+
+<h2 id="step3">Task 1: Review Amazon Elastic Compute Cloud (Amazon EC2) Instances</h2>
+
+<h3>Infrastructure</h3>
+
+<p>To support the lab, some resources are provisioned for you. The resources include an Amazon Virtual Private Cloud (Amazon VPC) with two public subnets in different Availability Zones, with a route table for each subnet, as shown.</p>
+
+<p><img src="./index_files/task1.png" alt="Task 1"></p>
+
+<p>A web application is provisioned in one of the public subnets. You will review the EC2 instance in this lab.</p>
+<ol start="4">
+<li><p>On the <span style="background-color:#232f3e;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;">Services <i class="fas fa-angle-down"></i></span> menu, choose <strong>EC2</strong>. Alternatively, you can type the service name in the <strong>Search</strong> box to access it.</p></li>
+<li><p>In the left navigation pane, locate the <strong>Instances</strong> section, and choose the <strong>Instances</strong> option.</p></li>
+<li><p>Choose your <i class="fas fa-check-square"></i> <strong>Web Application</strong> instance, which should appear in a <span style="color:green;"><i class="far fa-check-circle"></i> Running</span> state.</p></li>
+</ol>
+<p><i class="fas fa-comment"></i> To show more or less information in the <strong>Details</strong> tab, drag the window divider.</p>
+
+<p>Here, you can review the instance's details, including the instance type, security settings, network settings, and so forth.</p>
+
+<p>Next, you will access the web application in your browser.</p>
+<ol start="7">
+<li>From the left pane, copy <input readonly="" class="copyable-inline-input" size="23" type="text" value="PublicWebApplicationURL">.</li>
+<li>In a new browser tab, paste the URL you copied in the previous step. You should see the application, as shown.</li>
+</ol>
+<p><strong>Note:</strong> You might need to wait a few minutes before the web application becomes available.</p>
+
+<p><img src="./index_files/app-full-access.png" alt="Application Preview"></p>
+<ol start="9">
+<li>In the Employee Directory application, locate the <strong>Administration</strong> section in the left pane, and choose <strong>Configuration</strong>.</li>
+</ol>
+<p>On this page, you can find information about where the application is running. You can identify the Availability Zone in the <strong>Configuration Settings</strong> table. You will use this value to test your load balancer later in the lab.</p>
+
+<p><img src="./index_files/app-configuration-az.png" alt="Application Preview"></p>
+
+<p>Next, you will create an Application Load Balancer so the application can scale horizontally when traffic increases.</p>
+
+<h2 id="step4">Task 2: Create a Load Balancer</h2>
+
+<p>In this task, you wil create a load blancer.</p>
+<ol start="10">
+<li><p>Go to the browser tab displaying the <strong>EC2 dashboard</strong>.</p></li>
+<li><p>In the <strong>Load Balancing</strong> section, choose <strong>Load Balancers</strong>.</p></li>
+<li><p>Choose <span style="background-color:#257ACF;font-weight:bold;font-size:90%;color:white;border-radius:5px;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;">Create Load Balancer</span>.</p></li>
+<li><p>In the <strong>Application Load Balancer</strong> option, choose <span style="background-color:#257ACF;font-weight:bold;font-size:90%;color:white;border-radius:5px;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;">Create</span>.</p></li>
+<li><p>In the <strong>Step 1: Configure Load Balancer</strong> page, configure the following fields:</p></li>
+</ol>
+<p><strong>Important!</strong> Do not modify any other fields.</p>
+<ul>
+<li>
+<strong>Name:</strong> <input readonly="" class="copyable-inline-input" size="19" type="text" value="Web-Application-ELB">
+</li>
+<li>
+<strong>Availability Zones</strong> for the <strong>VPC</strong>, choose the <input readonly="" class="copyable-inline-input" size="7" type="text" value="Lab VPC">
+</li>
+<li>Select both <strong>Availability Zones (AZ)</strong>
+</li>
+</ul>
+<p><strong>Example:</strong> If you are in US West (Oregon), you would choose both <i class="far fa-check-square"></i> <strong>us-west-2a</strong> and <i class="far fa-check-square"></i> <strong>us-west-2b</strong>.</p>
+<ul>
+<li>Beside each Availability Zone, choose <input readonly="" class="copyable-inline-input" size="15" type="text" value="Public Subnet 1"> for the first AZ and <input readonly="" class="copyable-inline-input" size="15" type="text" value="Public Subnet 2"> for the second AZ.</li>
+</ul><ol start="15">
+<li>Choose <span style="background-color:#DEDEDE;font-weight:bold;font-size:90%;color:#444;border-radius:5px;border-width:1px;border-style:solid;border-color:#444;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Next: Configure Security Settings</strong></span>.</li>
+</ol>
+<p><strong>Note:</strong> A warning states <em>Improve your load balancer's security...</em>. As a best practice, you should use HTTPS, but this lab is not meant for production and is only for demonstration purposes, so you can ignore the warning.</p>
+<ol start="16">
+<li><p>Choose <span style="background-color:#DEDEDE;font-weight:bold;font-size:90%;color:#444;border-radius:5px;border-width:1px;border-style:solid;border-color:#444;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Next: Configure Security Groups</strong></span>.</p></li>
+<li><p>For the <strong>Assign a security group</strong> option, choose <strong>Create a new security group</strong>, and configure the following fields:</p></li>
+</ol><ul>
+<li>
+<strong>Security group name:</strong> <input readonly="" class="copyable-inline-input" size="16" type="text" value="load-balancer-sg">
+</li>
+<li>
+<strong>Description:</strong> <input readonly="" class="copyable-inline-input" size="55" type="text" value="Load balancer security group for employee directory app">
+</li>
+</ul><ol start="18">
+<li><p>Remove the existing rule using the <strong>X</strong> at the right.</p></li>
+<li><p>Choose <span style="background-color:#DEDEDE;font-weight:bold;font-size:90%;color:#444;border-radius:5px;border-width:1px;border-style:solid;border-color:#444;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Add Rule</strong></span>.</p></li>
+<li><p>In the <strong>Type</strong> dropdown, choose <span style="background-color:white;font-weight:bold;font-size:90%;color:#545b64;border-color:#545b64;border-radius:2px;border-width:1px;border-style:solid;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;"><strong>HTTP</strong></span>.</p></li>
+<li><p>In the <strong>Source</strong> dropdown, choose <span style="background-color:white;font-weight:bold;font-size:90%;color:#545b64;border-color:#545b64;border-radius:2px;border-width:1px;border-style:solid;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;"><strong>Anywhere</strong><i class="fas fa-angle-down"></i></span>.</p></li>
+<li><p>Choose <span style="background-color:#DEDEDE;font-weight:bold;font-size:90%;color:#444;border-radius:5px;border-width:1px;border-style:solid;border-color:#444;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Next: Configure Routing</strong></span>.</p></li>
+<li><p>In the <strong>Target group</strong> section, locate the <strong>Name</strong> field, and enter <input readonly="" class="copyable-inline-input" size="20" type="text" value="lab-app-target-group">.</p></li>
+<li><p>In <strong>Health checks</strong>, expand <strong>Advanced health check settings</strong>.</p></li>
+<li><p>Change the <strong>Healthy threshold</strong> to <input readonly="" class="copyable-inline-input" size="1" type="text" value="2">.</p></li>
+<li><p>Change the <strong>Unhealthy threshold</strong> to <input readonly="" class="copyable-inline-input" size="1" type="text" value="5">.</p></li>
+<li><p>Change the <strong>Timeout</strong> to <input readonly="" class="copyable-inline-input" size="2" type="text" value="30">.</p></li>
+<li><p>Change the <strong>Interval</strong> to <input readonly="" class="copyable-inline-input" size="2" type="text" value="40">.</p></li>
+<li><p>Choose <span style="background-color:#DEDEDE;font-weight:bold;font-size:90%;color:#444;border-radius:5px;border-width:1px;border-style:solid;border-color:#444;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Next: Register Targets</strong></span>.</p></li>
+<li><p>In the <strong>Instances</strong> section, choose the check box next to the <i class="fas fa-square"></i> <input readonly="" class="copyable-inline-input" size="15" type="text" value="Web Application"> instance.</p></li>
+<li><p>Choose <span style="background-color:#257ACF;font-weight:bold;font-size:90%;color:white;border-radius:5px;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Add to registered</strong></span>.</p></li>
+<li><p>Choose <span style="background-color:#DEDEDE;font-weight:bold;font-size:90%;color:#444;border-radius:5px;border-width:1px;border-style:solid;border-color:#444;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Next: Review</strong></span>.</p></li>
+<li><p>Choose <span style="background-color:#257ACF;font-weight:bold;font-size:90%;color:white;border-radius:5px;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Create</strong></span>.</p></li>
+<li><p>Once creation completes, choose <span style="background-color:#257ACF;font-weight:bold;font-size:90%;color:white;border-radius:5px;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Close</strong></span>.</p></li>
+</ol>
+<p><strong>Note:</strong> Wait for the State to change from <em>provisioning</em> to <em>active</em>. This process can take a few minutes. You might need to choose the <i class="fas fa-redo"></i> Refresh button at the top to see the status changes.</p>
+<ol start="35">
+<li><p>Select <i class="fas fa-square"></i> <input readonly="" class="copyable-inline-input" size="19" type="text" value="Web-Application-ELB">.</p></li>
+<li><p>In the <strong>Description</strong> tab, copy the <input readonly="" class="copyable-inline-input" size="8" type="text" value="DNS name">.</p></li>
+<li><p>Paste it into a new browser tab or window.</p></li>
+</ol>
+<p>You should see the Employee Directory application.</p>
+
+<h2 id="step5">Task 3: Create a Launch Template</h2>
+
+<p>Now that you can access your application from a single DNS name, you can scale horizontally! To do this, you need a launch template.</p>
+<ol start="38">
+<li><p>In the <strong>AWS Management Console</strong>, on the <span style="background-color:#232f3e;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;">Services <i class="fas fa-angle-down"></i></span> menu, locate the <strong>Compute</strong> section, and choose <strong>EC2</strong>. Alternatively, you can type the service name in the <strong>Search</strong> box to access it.</p></li>
+<li><p>In the left navigation pane, locate the <strong>Instances</strong> section, and choose <strong>Launch Templates</strong>.</p></li>
+<li><p>Choose <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Create launch template</strong></span>.</p></li>
+<li><p>In the <strong>Launch template name and description</strong> section, configure the following:</p></li>
+</ol><ul>
+<li>
+<strong>Launch template name:</strong> <input readonly="" class="copyable-inline-input" size="23" type="text" value="lab-app-launch-template">
+</li>
+<li>
+<strong>Template version description:</strong> <input readonly="" class="copyable-inline-input" size="43" type="text" value="A web server for the employee directory app">
+</li>
+<li>
+<strong>Auto Scaling guidance:</strong> Select the check box <i class="fas fa-check-square"></i> for <strong>Provide guidance to help me set up a template that I can use with EC2 Auto Scaling</strong>
+</li>
+</ul><ol start="42">
+<li><p>In the <strong>Amazon Machine Image (AMI)</strong> section, choose the <strong>AMI</strong> dropdown, and choose <strong>Amazon Linux 2 AMI (HVM), SSD Volume Type</strong>.</p></li>
+<li><p>In the <strong>Instance type</strong> section, choose the <strong>Instance type</strong> dropdown, and choose <strong>t3.micro</strong>.</p></li>
+<li><p>In the <strong>Key pair (login)</strong> section, confirm that the <strong>Key pair name</strong> dropdown is set to <strong>Don't include in launch template</strong>.</p></li>
+</ol>
+<p><i class="fas fa-info-circle"></i> Amazon EC2 uses public key cryptography to encrypt and decrypt login information. To log in to your instance, you must create a key pair, specify the name of the key pair when you launch the instance, and provide the private key when you connect to the instance.</p>
+
+<p>In this lab, you will not need to connect to the instance.</p>
+<ol start="45">
+<li><p>In the <strong>Network settings</strong> section, choose the <strong>Security group</strong> dropdown, and choose the <strong>Web Security Group</strong>.</p></li>
+<li><p>Expand the <strong>Advanced details</strong> section at the bottom, in the <strong>IAM instance profile</strong>, choose the option that contains <input readonly="" class="copyable-inline-input" size="18" type="text" value="WebInstanceProfile"> in its name.</p></li>
+<li><p>Scroll down and locate the <strong>User data</strong>.</p></li>
+</ol>
+<p>When you launch an instance, you can pass user data to the instance. The data can be used to run common automated configuration tasks and scripts.</p>
+
+<p>Your instance runs Amazon Linux, so you will provide a <em>shell script</em> that will run when the instance starts. This script installs the application's required dependencies. It also launches the application so you can access it in your browser.</p>
+<pre class="highlight shell"><code><span class="c">#!/bin/bash -ex</span>
+
+<span class="c"># Update yum</span>
+yum -y update
+
+<span class="c"># Add node's source repo</span>
+curl -sL https://rpm.nodesource.com/setup_15.x | bash -
+
+<span class="c">#Install nodejs</span>
+yum -y install nodejs
+
+<span class="c">#Install Amazon Linux extras</span>
+amazon-linux-extras install epel
+
+<span class="c">#Install stress tool (for load balancing testing)</span>
+yum -y install stress
+
+<span class="c"># Create a dedicated directory for the application</span>
+mkdir -p /var/app
+
+<span class="c"># Get the app from Amazon S3</span>
+wget https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/ILT-TF-100-TECESS-5/app/app.zip
+
+<span class="c"># Extract it into a desired folder</span>
+unzip app.zip -d /var/app/
+<span class="nb">cd</span> /var/app/
+
+<span class="c"># Configure S3 bucket details</span>
+<span class="nb">export </span><span class="nv">PHOTOS_BUCKET</span><span class="o">=</span>YOUR-S3-BUCKET-NAME
+
+<span class="c"># Configure default AWS Region</span>
+<span class="nb">export </span><span class="nv">DEFAULT_AWS_REGION</span><span class="o">=</span>YOUR-DEFAULT-AWS-REGION
+
+<span class="c"># Enable admin tools for stress testing</span>
+<span class="nb">export </span><span class="nv">SHOW_ADMIN_TOOLS</span><span class="o">=</span>1
+
+<span class="c"># Install dependencies</span>
+npm install
+
+<span class="c"># Start your app</span>
+npm start
+
+</code><button class="button button--text button--small copy-button js-copy-button-0"><ql-icon>content_copy</ql-icon></button></pre>
+<p>This script performs the following tasks:</p>
+<ul>
+<li>Installs system updates</li>
+<li>Installs a source repository so the Node.js installer can be downloaded</li>
+<li>Installs Node.js</li>
+<li>Installs the EPEL repository that provides additional options for package installation</li>
+<li>Installs the stress package to stress the CPU</li>
+<li>Downloads the application code</li>
+<li>Creates a dedicated directory for the web application</li>
+<li>Downloads and deploys (extracts) the application into the specified directory</li>
+<li>Tells the application the bucket where the images are available</li>
+<li>Tells the application the Region where the application is running</li>
+<li>Installs the application dependencies</li>
+<li>Starts the web application</li>
+</ul><ol start="48">
+<li>Paste the previous snippet into the user data field, and then make the following changes:</li>
+</ol><ul>
+<li><p>For <input readonly="" class="copyable-inline-input" size="13" type="text" value="PHOTOS_BUCKET">, replace <input readonly="" class="copyable-inline-input" size="19" type="text" value="YOUR-S3-BUCKET-NAME"> with the <input readonly="" class="copyable-inline-input" size="12" type="text" value="ImagesBucket"> value provided in this instruction's left panel.</p></li>
+<li><p>For <input readonly="" class="copyable-inline-input" size="18" type="text" value="DEFAULT_AWS_REGION">, replace <input readonly="" class="copyable-inline-input" size="23" type="text" value="YOUR-DEFAULT-AWS-REGION"> with the <input readonly="" class="copyable-inline-input" size="16" type="text" value="DefaultAWSRegion"> value provided in this instruction's left panel.</p></li>
+</ul><ol start="49">
+<li>Choose <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Create launch template</strong></span>.</li>
+</ol>
+<h2 id="step6">Task 4: Create an Auto Scaling Group</h2>
+
+<p>In this task, you will create an EC2 Auto Scaling group.</p>
+<ol start="50">
+<li><p>Choose <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>View Launch templates</strong></span>.</p></li>
+<li><p>In the left navigation pane, locate the <strong>Auto Scaling</strong> section, and choose <strong>Auto Scaling Groups</strong>.</p></li>
+<li><p>Choose <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Create Auto Scaling group</strong></span>.</p></li>
+<li><p>In the <strong>Name</strong> section, choose the <strong>Auto Scaling group name</strong> field, and type <input readonly="" class="copyable-inline-input" size="7" type="text" value="app-asg">.</p></li>
+<li><p>In the <strong>Launch template</strong> section, choose the <strong>Launch template</strong> dropdown, and choose <input readonly="" class="copyable-inline-input" size="23" type="text" value="lab-app-launch-template">.</p></li>
+<li><p>Choose <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Next</strong></span>.</p></li>
+<li><p>In the <strong>Network</strong> section, choose the <strong>VPC</strong> dropdown, and choose <input readonly="" class="copyable-inline-input" size="7" type="text" value="Lab VPC">.</p></li>
+<li><p>In the <strong>Subnets</strong> dropdown, choose <input readonly="" class="copyable-inline-input" size="15" type="text" value="Public Subnet 1"> and <input readonly="" class="copyable-inline-input" size="15" type="text" value="Public Subnet 2">.</p></li>
+<li><p>Choose <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Next</strong></span>.</p></li>
+<li><p>In the <strong>Load balancing – <em>optional</em></strong> section, choose <strong>Attach to an existing load balancer</strong>.</p></li>
+<li><p>In the <strong>Attach to an existing load balancer</strong> section, configure the following:</p></li>
+</ol><ul>
+<li>Choose <strong>Choose from your load balancer target groups</strong>.</li>
+<li>In the <strong>Existing load balancer target groups</strong> dropdown, choose <input readonly="" class="copyable-inline-input" size="27" type="text" value="lab-app-target-group | HTTP">.</li>
+</ul><ol start="61">
+<li><p>In the <strong>Health Checks – <em>optional</em></strong> section, choose <i class="fas fa-check-square"></i> <strong>ELB</strong>.</p></li>
+<li><p>Choose <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Next</strong></span>.</p></li>
+<li><p>In the <strong>Group size – <em>optional</em></strong> section, change the following values:</p></li>
+</ol><ul>
+<li>
+<strong>Desired capacity</strong> to <input readonly="" class="copyable-inline-input" size="1" type="text" value="2">
+</li>
+<li>
+<strong>Minimum capacity</strong> to <input readonly="" class="copyable-inline-input" size="1" type="text" value="2">
+</li>
+<li>
+<strong>Maximum capacity</strong> to <input readonly="" class="copyable-inline-input" size="1" type="text" value="4">
+</li>
+</ul><ol start="64">
+<li>In the <strong>Scaling policies – <em>optional</em></strong> section, configure the following:</li>
+</ol><ul>
+<li>Choose <i class="fas fa-dot-circle"></i> <strong>Target tracking scaling policy</strong>.</li>
+<li>Change the <strong>Target value</strong> to <input readonly="" class="copyable-inline-input" size="2" type="text" value="60">.</li>
+<li>Change the <strong>Instances need</strong> to <input readonly="" class="copyable-inline-input" size="3" type="text" value="300">.</li>
+</ul><ol start="65">
+<li><p>Choose <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Next</strong></span>.</p></li>
+<li><p>In the <strong>Add notifications</strong> section, choose <span style="background-color:white;font-weight:bold;font-size:90%;color:#545b64;border-color:#545b64;border-radius:2px;border-width:1px;border-style:solid;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;"><strong>Add notification</strong></span>.</p></li>
+<li><p>In the <strong>Notification 1</strong> section, locate the <strong>SNS Topic</strong> option.</p></li>
+<li><p>Choose <span style="background-color:white;font-weight:bold;font-size:90%;color:#545b64;border-color:#545b64;border-radius:2px;border-width:1px;border-style:solid;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;"><strong>Create a topic</strong></span>, and configure the following:</p></li>
+</ol><ul>
+<li>
+<strong>Send a notification to:</strong> <input readonly="" class="copyable-inline-input" size="17" type="text" value="lab-app-sns-topic">
+</li>
+<li>
+<strong>With these recipients:</strong> Your email address</li>
+</ul><ol start="69">
+<li><p>Choose <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Next</strong></span>.</p></li>
+<li><p>Choose <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Next</strong></span> again.</p></li>
+<li><p>Scroll to the bottom of the <strong>Review</strong> screen, and choose <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space:nowrap;"><strong>Create Auto Scaling group</strong></span>.</p></li>
+<li><p>Check for an email with the subject of <strong>AWS Notification – Subscription Confirmation</strong>, and then open it.</p></li>
+<li><p>In the email, choose the <strong>Confirm subscription</strong> link.</p></li>
+</ol>
+<p>A new browser tab will open with the subscription confirmation. A message should state <em>Subscription confirmed!</em>.</p>
+
+<h2 id="step7">Task 5: Test the Application</h2>
+<ol start="74">
+<li><p>Go to the browser tab where the Auto Scaling groups table is displayed.</p></li>
+<li><p>In the left navigation pane, locate the <strong>Load Balancing</strong> section, and choose <strong>Target Groups</strong>.</p></li>
+<li><p>Choose the <input readonly="" class="copyable-inline-input" size="20" type="text" value="lab-app-target-group"> link.</p></li>
+<li><p>Choose the <strong>Targets</strong> tab.</p></li>
+</ol>
+<p>You should see two additional instances launching (or already launched). Wait until the Status shows as <span style="color:green;"><i class="far fa-check-circle"></i> healthy </span> for both instances.</p>
+<ol start="78">
+<li><p>In the left navigation pane, locate the <strong>Load Balancing</strong> section, and choose <strong>Load Balancers</strong>.</p></li>
+<li><p>Choose the <i class="fas fa-check-square"></i> <input readonly="" class="copyable-inline-input" size="19" type="text" value="Web-Application-ELB">.</p></li>
+<li><p>In the <strong>Description</strong> tab, copy the <strong>DNS name</strong>.</p></li>
+<li><p>Paste the DNS name into a new browser tab or window.</p></li>
+</ol>
+<p>You should now see the Employee Directory application.</p>
+<ol start="82">
+<li>In the Employee Directory application, locate the <strong>Administration</strong> section in the left pane, and choose <strong>Configuration</strong>.</li>
+</ol>
+<p>The <strong>Configuration Settings</strong> page will show the <strong>Availability Zone</strong> you are being routed to.</p>
+<ol start="83">
+<li>Refresh the page a few times, and you will notice you are being routed to a different <strong>Availability Zone</strong>.</li>
+</ol>
+<p>Now, you will stress the CPU of the instance to test scaling.</p>
+<ol start="84">
+<li>In The <strong>Admin Tools</strong> section, choose the <strong>Stress Appliction For:</strong> dropdown, and choose <strong>10 minutes</strong>. At the top, a message shows <i class="fas fa-exclamation-triangle"></i> <strong>Stressing...</strong>.</li>
+</ol>
+<p><strong>Note:</strong> Grab a beverage while you wait!</p>
+<ol start="85">
+<li><p>After approximately 10 minutes, go to the <strong>EC2 dashboard</strong> in the AWS Management Console.</p></li>
+<li><p>In the left navigation pane, locate the <strong>Load Balancing</strong> section, and choose <strong>Target Groups</strong>.</p></li>
+<li><p>Choose the <input readonly="" class="copyable-inline-input" size="20" type="text" value="lab-app-target-group">.</p></li>
+<li><p>Choose the <strong>Targets</strong> tab.</p></li>
+</ol>
+<p>Additional instances should be spun up due to the stress test. You should also receive a notification email.</p>
+
+<h2 id="step8">Lab Complete</h2>
+
+<p><i class="icon-flag-checkered"></i> Congratulations! You completed the lab.</p>
+
+<h2 id="step9">End Lab</h2>
+
+<p>Follow these steps to close the console, end your lab, and evaluate the experience.</p>
+<ol start="89">
+<li><p>Return to the AWS Management Console.</p></li>
+<li><p>On the navigation bar, choose <strong>awsstudent@&lt;AccountNumber&gt;</strong>, and then choose <strong>Sign Out</strong>.</p></li>
+<li><p>Choose <span style="background-color:#D93025;font-family:Google Sans;font-weight:bold;font-size:90%;color:white;border-color:#D93025;border-radius:4px;border-width:2px;border-style:solid;padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px;">End Lab</span></p></li>
+<li><p>Choose <span style="background-color:#DEDEDE;font-family:Google Sans;font-weight:bold;font-size:90%;color:#444;border-width:1px;border-style:solid;border-color:#444;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;">OK</span></p></li>
+<li><p>(Optional):</p></li>
+</ol><ul>
+<li>Select the applicable number of stars <i class="far fa-star"></i>
+</li>
+<li>Type a comment</li>
+<li>
+<p>Choose <strong>Submit</strong></p>
+<ul>
+<li>1 star = Very dissatisfied</li>
+<li>2 stars = Dissatisfied</li>
+<li>3 stars = Neutral</li>
+<li>4 stars = Satisfied</li>
+<li>5 stars = Very satisfied</li>
+</ul>
+</li>
+</ul>
+<p>You may close the window if you don't want to provide feedback.</p>
+
+<h2 id="step10">Additional Resources</h2>
+<ul>
+<li>For more information about Amazon EC2 Auto Scaling, see <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html" target="_blank">Amazon EC2 Auto Scaling</a>.</li>
+<li>For more information about AWS Training and Certification, see <a href="http://aws.amazon.com/training/" target="_blank"><em>http://aws.amazon.com/training/</em></a>.</li>
+</ul>
+</div>
+</div>
+
+
+<div class="lab-content__end-lab-button js-end-lab-button-container hidden">
+<ql-lab-control-button class="js-end-lab-button" running=""></ql-lab-control-button>
+</div>
+<!-- / TODO: Move recommendations into the end lab modal -->
+</ql-drawer-content>
+<ql-drawer end="" id="outline-drawer" open="" slot="drawer" width="320" aria-hidden="false" mode="side" style="width: 320px; visibility: visible;">
+<ul class="lab-content__outline js-lab-content-outline">
+<li><a href="https://aws.qwiklabs.com/classrooms/53233/labs/298995#step1">Objectives</a></li><li><a href="https://aws.qwiklabs.com/classrooms/53233/labs/298995#step2">Start Lab</a></li><li><a href="https://aws.qwiklabs.com/classrooms/53233/labs/298995#step3">Task 1: Review Amazon Elastic Compute Cloud (Amazon EC2) Instances</a></li><li><a href="https://aws.qwiklabs.com/classrooms/53233/labs/298995#step4">Task 2: Create a Load Balancer</a></li><li><a href="https://aws.qwiklabs.com/classrooms/53233/labs/298995#step5">Task 3: Create a Launch Template</a></li><li><a href="https://aws.qwiklabs.com/classrooms/53233/labs/298995#step6">Task 4: Create an Auto Scaling Group</a></li><li><a href="https://aws.qwiklabs.com/classrooms/53233/labs/298995#step7">Task 5: Test the Application</a></li><li><a href="https://aws.qwiklabs.com/classrooms/53233/labs/298995#step8">Lab Complete</a></li><li><a href="https://aws.qwiklabs.com/classrooms/53233/labs/298995#step9">End Lab</a></li><li><a href="https://aws.qwiklabs.com/classrooms/53233/labs/298995#step10">Additional Resources</a></li>
+</ul>
+</ql-drawer>
+</ql-drawer-container>
+</ql-drawer-content>
+</ql-drawer-container>
+
+
+
+</div>
+</main>
+
+
+<div class="modal fade" id="lab-details-modal">
+<div class="modal-container">
+<div class="modal-content mdl-shadow--24dp">
+<div class="modal-body">
+<p class="l-mbm">
+This lab guides you through the process of how to configure High Availability for a web application, so it can scale horizontally as demand increases.
+</p>
+<p class="small-label l-mbs">
+<strong>
+Duration:
+</strong>
+3m setup
+·
+45m access
+·
+45m completion
+</p>
+<p class="small-label l-mbs">
+<strong>AWS Region:</strong>
+[us-west-2] <strong>US West (Oregon)</strong>
+</p>
+<p class="small-label l-mbs">
+
+</p>
+<p class="small-label">
+<strong>
+Permalink:
+</strong>
+<a href="https://aws.qwiklabs.com/catalog_lab/10100">https://aws.qwiklabs.com/catalog_lab/10100</a>
+</p>
+</div>
+<div class="modal-actions">
+<a class="button button--text" data-dismiss="modal">
+Got It
+</a>
+</div>
+
+
+</div>
+</div>
+<iframe class="l-ie-iframe-fix" src="./index_files/saved_resource(2).html"></iframe>
+</div>
+<ql-dialog headline="How satisfied are you with this lab?&lt;span aria-hidden=&quot;true&quot;&gt;*&lt;/span&gt;" id="lab-review-dialog" tabindex="-1" aria-hidden="true">
+<form class="simple_form js-lab-review-form" id="new_lab_review" action="https://aws.qwiklabs.com/lab_reviews" accept-charset="UTF-8" data-remote="true" method="post"><input name="utf8" type="hidden" value="✓"><div aria-labelledby="lab-review-dialog" aria-required="true" aria-valuemax="5" aria-valuemin="0" aria-valuenow="0" class="rateit js-rateit" data-rateit-max="5" data-rateit-min="0" data-rateit-resetable="false" data-rateit-step="1" data-rateit-value="0" id="lab-review-rateit" role="slider" tabindex="0"><div class="rateit-reset" style="display: none;"></div><div class="rateit-range" style="width: 80px; height: 16px;"><div class="rateit-selected" style="height: 16px; width: 0px;"></div><div class="rateit-hover" style="height:16px"></div></div></div>
+<div class="l-mtm">
+
+<div class="control-group hidden lab_review_user_id"><div class="controls"><input class="hidden" type="hidden" value="484237" name="lab_review[user_id]" id="lab_review_user_id"></div></div>
+<div class="control-group hidden lab_review_classroom_id"><div class="controls"><input class="hidden" type="hidden" value="53233" name="lab_review[classroom_id]" id="lab_review_classroom_id"></div></div>
+<div class="control-group hidden lab_review_lab_id"><div class="controls"><input class="hidden" type="hidden" value="10100" name="lab_review[lab_id]" id="lab_review_lab_id"></div></div>
+<div class="control-group hidden lab_review_focus_id"><div class="controls"><input class="hidden" type="hidden" value="298995" name="lab_review[focus_id]" id="lab_review_focus_id"></div></div>
+<div class="control-group hidden lab_review_rating"><div class="controls"><input class="hidden js-rating-input" type="hidden" name="lab_review[rating]" id="lab_review_rating"></div></div>
+<div class="control-group text optional lab_review_comment"><label class="text optional control-label" for="lab_review_comment">Additional Comments</label><div class="controls"><textarea class="text optional" name="lab_review[comment]" id="lab_review_comment"></textarea></div></div>
+</div>
+</form><ql-button disabled="" id="submit" label="Submit" slot="action" text=""></ql-button>
+</ql-dialog>
+
+<ql-dialog headline="All done? If you end this lab, you will lose all your work. You may not be able to restart the lab if there is a quota limit. Are you sure you want to end this lab?
+" icon="error_outline" id="js-lab-are-you-sure-dialog" tabindex="-1" aria-hidden="true">
+<ql-button id="js-are-you-sure-button" label="Submit" slot="action" text=""></ql-button>
+</ql-dialog>
+
+
+<script>
+  $( function() {
+    ql.initMaterialInputs();
+    initChosen();
+    initSearch();
+    initTabs();
+    ql.list.init();
+    ql.favoriting.init();
+    ql.header.myAccount.init();
+    initTooltips();
+    ql.autocomplete.init();
+    ql.modals.init();
+    ql.toggleButtons.init();
+    ql.analytics.init();
+    initLabContent();
+  ql.labOutline.links.init();
+  initLabReviewModal();
+  initLabReviewTranslations( {"star_amount_1":"1 of 5 stars","star_amount_2":"2 of 5 stars","star_amount_3":"3 of 5 stars","star_amount_4":"4 of 5 stars","star_amount_5":"5 of 5 stars"} )
+  ql.labAssessment.init();
+  ql.labData.init();
+  initLabTranslations( {"are_you_sure":"All done? If you end this lab, you will lose all your work. You may not be able to restart the lab if there is a quota limit. Are you sure you want to end this lab?\n","in_progress":"*In Progress*","ending":"*Ending*","starting":"*Starting, please wait*","end_concurrent_labs":"Sorry, you can only run one lab at a time. To start this lab, please confirm that you want all of your existing labs to end.\n","copied":"Copied","no_resource":"Error retrieving resource.","no_support":"No Support","mac_press":"Press ⌘-C to copy","thanks_review":"Thanks for reviewing this lab.","windows_press":"Press Ctrl-C to copy","days":"days"} );
+  ql.labRun.init();
+  ql.chat.init();
+  ql.initHeader();
+  ql.navigation.init();
+  ql.navPanel.init();
+  ql.navigation.init();
+  
+  });
+</script>
+
+
+
+
+<iframe data-product="web_widget" title="No content" tabindex="-1" aria-hidden="true" src="./index_files/saved_resource(3).html" style="width: 0px; height: 0px; border: 0px; position: absolute; top: -9999px;"></iframe><div><iframe title="Opens a widget where you can chat to one of our agents" id="launcher" tabindex="-1" style="width: 108px; height: 50px; padding: 0px; margin: 10px 20px; position: fixed; bottom: 30px; overflow: visible; opacity: 0; border: 0px; z-index: 999998; transition-duration: 250ms; transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1); transition-property: opacity, top, bottom; top: -9999px; visibility: hidden;" src="./index_files/saved_resource(4).html"></iframe></div></body></html>
